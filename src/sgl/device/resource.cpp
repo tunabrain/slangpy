@@ -165,8 +165,13 @@ DescriptorHandle Buffer::descriptor_handle_ro() const
     rhi::DescriptorHandle rhi_handle = {};
     //m_rhi_buffer->getDescriptorHandle(rhi::DescriptorHandleAccess::Read, format, range, &rhi_handle);
     m_rhi_buffer->getDescriptorHandle(rhi::DescriptorHandleAccess::Read, rhi::Format::Undefined, range, &rhi_handle);
+    SGL_CHECK(
+        rhi_handle,
+        "Could not get buffer descriptor handle. "
+        "You may be exceeding the maximum bindless buffer count. "
+        "Try increasing BindlessDesc.buffer_count when you create the Device."
+    );
     return DescriptorHandle(rhi_handle);
-
 }
 DescriptorHandle Buffer::descriptor_handle_rw() const
 {
@@ -174,6 +179,12 @@ DescriptorHandle Buffer::descriptor_handle_rw() const
     rhi::BufferRange range = {0, m_desc.size};
     rhi::DescriptorHandle rhi_handle = {};
     m_rhi_buffer->getDescriptorHandle(rhi::DescriptorHandleAccess::ReadWrite, format, range, &rhi_handle);
+    SGL_CHECK(
+        rhi_handle,
+        "Could not get buffer descriptor handle. "
+        "You may be exceeding the maximum bindless buffer count. "
+        "Try increasing BindlessDesc.buffer_count when you create the Device."
+    );
     return DescriptorHandle(rhi_handle);
 }
 
